@@ -16,12 +16,40 @@ knitr::opts_chunk$set(echo = TRUE)
 #dat_merged <- merge(dat,dat_mpi,by=c("country","region"))
 #final_dat <- dat_merged[order(dat_merged$MPI),]
 
-
 ```
 
-
+## Reading the data set
 ```{r}
 dat <- read.csv("kiva_loan.csv")
 str(dat)
 summary(dat)
 ```
+
+## Exploring the data set
+Come up with some basic plots:
+barplots,
+scatterplots,
+histograms,
+boxplots...
+```{r}
+
+```
+
+## Fitting the model
+Come up with some basic questions on what we need to predict...
+
+Some ideas:
+
+Predict the MPI:
+
+The Global Multidimensional Poverty Index (MPI) was developed in 2010 by the Oxford Poverty & Human Development Initiative (OPHI) and the United Nations Development Programme. and uses different factors to determine poverty beyond income-based lists. It replaced the previous Human Poverty Index.
+
+Predict the amount to be loaned:
+
+Predict what they are using the money for:
+
+```{r}
+
+
+```
+
