@@ -23,15 +23,19 @@ summary(dat)
 ## Exploring the data set
 
 ```{r}
-plot(dat$cnt~dat$dteday,pch=".")
+plot(dat$cnt~dat$dteday,pch=".",ylab="bikes rented",xlab="date")
 ```
 ```{r}
-plot(dat$cnt~dat$weathersit,xlim=c(1,4),pch=20)
+boxplot(dat$cnt~dat$weathersit,xlim=c(0,4),pch=20,names=c("clear","misty","light rain"),ylab="bikes rented")
 ```
 ```{r}
-boxplot(dat$cnt~dat$season)
+boxplot(dat$cnt~dat$season,names=c("spring","summer","fall","winter"),ylab="bikes rented")
 ```
 ```{r}
-plot(dat$cnt~dat$temp,pch=".")
+plot(dat$cnt~dat$temp,pch=".",xlab="temperature",ylab="bikes rented")
+```
+
+```{r}
+boxplot(dat$cnt~dat$holiday,names=c("not holiday","holiday"),ylab="bikes rented")
 ```
 
