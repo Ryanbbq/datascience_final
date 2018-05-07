@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Preprocessing data set
 ```{r}
-dat <- read.csv("https://raw.githubusercontent.com/Ryanbbq/datascience_final/master/hour.csv")
+dat <- read.csv("day.csv")
 
 ```
 
@@ -21,9 +21,17 @@ summary(dat)
 ```
 
 ## Exploring the data set
+
 ```{r}
-hist(dat$temp)
+plot(dat$cnt~dat$dteday,pch=".")
 ```
-
-
+```{r}
+plot(dat$cnt~dat$weathersit,xlim=c(1,4),pch=20)
+```
+```{r}
+boxplot(dat$cnt~dat$season)
+```
+```{r}
+plot(dat$cnt~dat$temp,pch=".")
+```
 
