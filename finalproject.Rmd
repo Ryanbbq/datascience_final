@@ -1,5 +1,5 @@
 ---
-title: "Predicting Bike rentals"
+title: "Predicting Bike Rentals"
 author: "Joel Casillas, Ravinder Singh, and Ryan LeBon"
 date: "May 11, 2018"
 output: html_document
@@ -24,9 +24,11 @@ Our goal for this project is to predict the best features that lead to the most 
 
 set.seed(123)
 library(rpart)
+library(corrplot)
 library(e1071) 
 library(rpart.plot)
 library(cluster)
+library(fpc)
 source("lin-reg-util.R")
 source("class-util.R")
 
@@ -144,6 +146,49 @@ legend("bottomright", 95, legend=c("Registered", "Casual"),col=c("purple", "cyan
 
 
 This is a scatterplot showing the amount of casual bike renters compared to registered bike renters. There is almost twice as many registered bike renters than their is casual. This gives us an idea of how many renters are actually one time users or not.
+
+# Correlation Analysis
+```{r}
+
+bike_corr <- dat[,10:13]
+train_cor <- cor(bike_corr)
+corrplot(train_cor, method = 'color', addCoef.col="black")
+```
+
+# Cluster Analysis
+
+```{r}
+
+cluster_dat <- dat
+cluster_dat$dteday <- NULL
+cluster_dat$instant <- NULL
+cluster_dat$yr <- NULL
+num_clust <- 3
+
+bikes.myclust <- kmeans(cluster_dat,num_clust)
+plotcluster(cluster_dat,bikes.myclust$cluster,pch=1)
+
+good_or_bad <- bikes.myclust$totss / bikes.myclust$betweenss
+
+paste0("If the bss/tss is close to a score of 1, then kmeans worked well... here is the score: ",round(good_or_bad,3))
+
+```
+
+
+# Dendogram Analysis
+```{r}
+
+library(ape)
+dendo_dat <- dat
+bikes.use = dendo_dat[,-c(1,2)]
+bikes.use = scale(bikes.use)
+bikes.dist = dist(bikes.use)
+bikes.hclust = hclust(bikes.dist)
+plot(bikes.hclust,labels=dendo_dat$cnt,main='Dendogram from bicycle dataset',cex=0.3)
+plot(as.phylo(bikes.hclust), type = "fan")
+
+```
+
 
 
 ```{r}
