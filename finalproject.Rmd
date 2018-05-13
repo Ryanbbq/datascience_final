@@ -176,12 +176,12 @@ cluster_dat$yr <- NULL
 num_clust <- 7
 bikes.myclust <- kmeans(cluster_dat,num_clust,algorithm="Lloyd",iter.max=100)
 #str(bikes.myclust)
-plotcluster(cluster_dat,bikes.myclust$cluster,pch=1)
+plotcluster(cluster_dat,bikes.myclust$cluster,pch=1,method="dc")
 
 ```
 
 
-This cluster analysis plot distinguishes given classes. First k-means clustering was performed on the cluster data set using Lloyd's algorithm, it is an algorithm named after Stuart P. Lloyd for finding evenly spaced sets of points in subsets of Euclidean spaces and partitions of these subsets into well-shaped and uniformly sized convex cells. We used 7 clusters for this example. We then used the plotcluster() function from the library 'fpc' to plot the cluster.
+This cluster analysis plot distinguishes given classes. First k-means clustering was performed on the cluster data set using Lloyd's algorithm, it is an algorithm named after Stuart P. Lloyd for finding evenly spaced sets of points in subsets of Euclidean spaces and partitions of these subsets into well-shaped and uniformly sized convex cells. We used 7 clusters for this example. We then used the plotcluster() function from the library 'fpc' to plot the cluster. The x and y axis dc1 and dc2 represent discriminant coordinates which are referred to as 'canonical variates'. A canonical variate is a new variable (variate) formed by making a linear combination of two or more variates (variables) from a data set. A linear combination of variables is the same as a weighted sum of variables.
 
 
 ```{r}
