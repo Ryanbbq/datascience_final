@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 # Introduction
 
-This dataset contains the hourly and daily count of rental bikes between years 2011 and 2012 in Capital bikeshare system with the corresponding weather and seasonal information. The data set is fairly new and small in the sense that it has only has 2 years of data. So any predictions created must be taken lighlty. The data set has 731 rows, and 16 columns total.
+This dataset contains the hourly and daily count of rental bikes between the year 2011 and 2012 in Capital bikeshare system with the corresponding weather and seasonal information. This dataset was obtained from [UC Irvines](https://archive.ics.uci.edu/ml/datasets/bike+sharing+dataset) machine learning repository. The data set contains integers and numerical values, so the task performed on this data set had to be regression. The data set contains 731 rows, and 16 columns total.
 
 [Capital Bikeshare](https://www.capitalbikeshare.com) is metro DC's bikeshare service, with 4,300 bikes and 500 stations across 5 jurisdictions: Washington, DC.; Arlington, VA; Alexandria, VA; Montgomery, MD and Fairfax County, VA. Designed for quick trips with convenience in mind, it’s a fun and affordable way to get around.
 
@@ -116,7 +116,7 @@ plot(dat$cnt~dat$mnth, pch=8, ylab="users", xlab="months",col="orangered",main="
 ```
 
 
-This is a plot of how many bikes were being rented during each month. Please note that for this plot we used the day data set and not the hour data set.
+This is a plot of how many bikes were being rented during each month. As you can see the months that had the most users were on march(3) and september(9). Please note that for this plot we used the day data set and not the hour data set.
 
 
 ```{r}
@@ -131,13 +131,18 @@ This is a boxplot of bikes that were being rented based on the season. We expect
 boxplot(dat$cnt~dat$holiday, names=c("regular day","holiday"), ylab="users",col="orangered",main="Rentals on regular days vs holidays")
 ```
 
-This is a boxplot of bikes that were rented on holidays and bikes that were rented on regular days.
+This is a boxplot of bikes that were rented on holidays and bikes that were rented on regular days.There were more users on regular days, but there was still a signficant amount of users on holidays.
 
 ```{r}
-plot(cnt ~ temp,data=dat,col="orangered",main="Amount of bike rentals based on temperature",ylab="bikes rented",xlab="normalized temperature in celsius",pch=8)
+plot(cnt ~ temp,data=dat,col="orangered",main="Amount of bike rentals based on temperature",ylab="users",xlab="normalized temperature in celsius",pch=8,xlim=c(0,1))
 biketemp <- lm(cnt~temp,data=dat)
 abline(biketemp,col="blue",lty="dashed")
+mx  = mean(dat$temp)
+abline(v = mx, col = "blue",lty="dashed")
+
 ```
+
+This is a plot of users renting bikes based on the normalized temperature in celsius. The x axis goes from 0 to 1, where 0 is the coldest and 1 is the hottest. As you can see the most bikes rented were between 0.4 and 0.6.
 
 ```{r}
 plot(x=dat$registered,y=dat$casual,xlab = "Amount of Registered",ylab = "Amount of Casual",col=c("purple","cyan"),pch=16,main = "Amount of Casual vs Registered Bike Renters")
@@ -153,7 +158,12 @@ This is a scatterplot showing the amount of casual bike renters compared to regi
 bike_corr <- dat[,10:13]
 train_cor <- cor(bike_corr)
 corrplot(train_cor, method = 'color', addCoef.col="black")
+
 ```
+
+
+This is a correlation matrix that gives us the confidence intervals. A confidence interval is a range of values so defined that there is a specified probability that the value of a parameter lies within it. This matrix shows that temp and atemp are the most correlated features in our dataset.
+
 
 # Cluster Analysis
 
@@ -163,16 +173,25 @@ cluster_dat <- dat
 cluster_dat$dteday <- NULL
 cluster_dat$instant <- NULL
 cluster_dat$yr <- NULL
-num_clust <- 3
-
-bikes.myclust <- kmeans(cluster_dat,num_clust)
+num_clust <- 7
+bikes.myclust <- kmeans(cluster_dat,num_clust,algorithm="Lloyd",iter.max=100)
+#str(bikes.myclust)
 plotcluster(cluster_dat,bikes.myclust$cluster,pch=1)
+
+```
+
+
+This cluster analysis plot distinguishes given classes. First k-means clustering was performed on the cluster data set using Lloyd's algorithm, it is an algorithm named after Stuart P. Lloyd for finding evenly spaced sets of points in subsets of Euclidean spaces and partitions of these subsets into well-shaped and uniformly sized convex cells. We used 7 clusters for this example. We then used the plotcluster() function from the library 'fpc' to plot the cluster.
+
+
+```{r}
 
 good_or_bad <- bikes.myclust$totss / bikes.myclust$betweenss
 
-paste0("If the bss/tss is close to a score of 1, then kmeans worked well... here is the score: ",round(good_or_bad,3))
+paste0("If the bss/tss is close to a score of 1, then kmeans performed well...Score:(",round(good_or_bad,3),")")
 
 ```
+
 
 
 # Dendogram Analysis
@@ -189,6 +208,7 @@ plot(as.phylo(bikes.hclust), type = "fan")
 
 ```
 
+This is a dendogram from the bicycle dataset. A dendograms is a tree diagram, that shows taxonomic relationships. However the dendogram had so many features that it was hard to compute exact values.
 
 
 ```{r}
@@ -204,7 +224,7 @@ te_dat = dsets[[2]]
 
 
 
-## Linear Regression Model
+# Linear Regression Model
 ```{r}
 fit = lm(cnt ~ ., data=tr_dat)  
 predicted = predict(fit, tr_dat)
@@ -259,7 +279,7 @@ There seems to be many outliers in this plot, because the trend for this is almo
 
 
 
-#Decision Trees Regression Model
+# Decision Trees Regression Model
 ```{r}
 model2 = rpart(cnt~ holiday + temp + atemp + workingday + windspeed, data = tr_dat)
 prp(model2, extra= 1, varlen=-10,
@@ -294,7 +314,7 @@ We actually found out that decision tree regression model didn't perform very we
 
 
 
-## Comparison of Decision Tree Regression model and Linear Regression model
+# Comparison of Decision Tree Regression model and Linear Regression model
 
 ```{r}
 par(mfrow=c(1,2))
@@ -313,11 +333,11 @@ hist(errors, col="red4", xlim=c(-10e3, 10e3),main = "Linear Regression Error")
 
 ```
 
-Here we decided to compare the models we used to predict bike rentals. These histograms are of errors.
+Here we decided to compare the models we used to predict bike rentals. These histograms show the errors of linear regression and decision tree regression. Because of these errors we can see that linear regression performed better on this particular dataset compared to decision tree regression.
 
 
 
+# Conclusion
 
-## Short Conclusion
+Based on our hypothesis we found out the that the top 3 features were seasons, temperature, and humidity which lead to a user renting out a bicycle. Linear regression performed well on this particular dataset compared to decision tree regression. Linear regression works really nicely when the data has a linear shape. In case the dataset didn't have linear shape then linear regression would not capture the non-linear features. Therefore, decision tree regression could have performed well than linear regression.
 
-Conclusion states what you found and what you thought
